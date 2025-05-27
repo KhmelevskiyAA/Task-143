@@ -62,7 +62,7 @@ int main()
 
 double getValue()
 {
-    double value;
+    double value = 0;
     cin >> value;
     if (cin.fail())
     {
