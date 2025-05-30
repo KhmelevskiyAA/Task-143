@@ -232,15 +232,19 @@ int replaceMinWithAverage(int arr[], const int n)
 bool hasTwoPairsWithSameSign(const int arr[], const int n)
 {
     if (n < 4) return false; // Не может быть двух пар при n < 4
-    
     int pairsFound = 0;
-    for (size_t i = 0; i < n - 1; ++i)
+    for (size_t i = 0; i < n - 1; ) // Убрали ++i из условия цикла
     {
         if (arr[i] * arr[i + 1] > 0) // Одинаковые знаки
         {
             pairsFound++;
-            if (pairsFound >= 2) return true;
-            i++; // Пропускаем следующий элемент, так как он уже в паре
+            if (pairsFound >= 2) 
+                return true;
+            i += 2; // Перескакиваем через следующий элемент
+        }
+        else
+        {
+            i++; // Переходим к следующему элементу
         }
     }
     return false;
