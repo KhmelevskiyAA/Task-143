@@ -120,10 +120,11 @@ int main()
         return -1;
     }
 
-    cout << "Элементы массива:" << endl;
-    printArray(arr, n);
-
-    replaceMinWithAverage(arr, n);
+     cout << "Массив после замены минимального значения " << oldValue 
+         << " на среднее (" << arr[minIndex] << "):" << endl;
+    
+    return arr[minIndex];
+}
     printArray(arr, n);
 
     printIndicesGreaterThanPrevious(arr, n);
