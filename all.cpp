@@ -26,12 +26,15 @@ double triangleArea(const double a, const double b, const double c) {
 }
 
 // Функция для безопасного ввода числа
-double getValue() {
+double getValue()
+{
     double value;
-    while (!(cin >> value)) {
-        cerr << "Ошибка ввода! Ожидалось число. Попробуйте снова: ";
-        cin.clear(); // Сбрасываем флаг ошибки
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Очищаем буфер ввода
+    double value = 0;
+    cin >> value;
+    if (cin.fail())
+    {
+        cout << "Некорректное значение" << endl;
+        abort();
     }
     return value;
 }
@@ -39,22 +42,20 @@ double getValue() {
 int main() {
     try {
         // Ввод данных для прямоугольника
-        const double length, width;
         cout << "Введите длину прямоугольника: ";
-        length = getValue();
+       const double length = getValue();
         cout << "Введите ширину прямоугольника: ";
-        width = getValue();
+       const double width = getValue();
         cout << "Площадь прямоугольника: " << rectangleArea(length, width) << endl;
 
         // Ввод данных для треугольника
-        double a, b, c;
         cout << "Введите три стороны треугольника:\n";
         cout << "Сторона a: ";
-        a = getValue();
+       const double a = getValue();
         cout << "Сторона b: ";
-        b = getValue();
+       const double b = getValue();
         cout << "Сторона c: ";
-        c = getValue();
+       const double c = getValue();
         cout << "Площадь треугольника: " << triangleArea(a, b, c) << endl;
     }
     catch (const invalid_argument& e) {
