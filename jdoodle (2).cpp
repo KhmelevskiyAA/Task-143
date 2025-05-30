@@ -153,7 +153,7 @@ void checkN(const int n)
 size_t getSize()
 {
     cout << "Введите размер массива: ";
-    int n;
+    int n=0;
     cin >> n;
     checkN(n);
     return (size_t)n;
@@ -161,7 +161,7 @@ size_t getSize()
 
 int getNumber()
 {
-    int number;
+    int number =0;
     cin >> number;
     if (cin.fail())
     {
@@ -199,57 +199,52 @@ void checkRange(const int min, const int max)
 
 int replaceMinWithAverage(int arr[], const int n)
 {
+    // Создаем копию массива для работы
+    vector<int> arrCopy(arr, arr + n);
+    
     int minIndex = 0;
+    int sum = 0; // Явная инициализация
 
     for (size_t i = 1; i < n; ++i)
     {
-        if (arr[i] < arr[minIndex])
+        if (arrCopy[i] < arrCopy[minIndex])
         {
             minIndex = i;
         }
     }
 
-    int sum = 0;
-
     for (size_t i = 0; i < n; ++i)
     {
-        sum += arr[i];
+        sum += arrCopy[i];
     }
 
-    arr[minIndex] = sum / n;
+    arrCopy[minIndex] = sum / n;
 
     cout << "Массив после замены минимального значения на среднее: ";
     for (size_t i = 0; i < n; ++i)
     {
-        cout << arr[i] << " ";
+        cout << arrCopy[i] << " ";
     }
     cout << endl;
+    
+    return sum / n;
 }
-
-void printIndicesGreaterThanPrevious(const int arr[], const int n)
-{
-    for (size_t i = 1; i < n; ++i)
-    {
-        if (arr[i] > arr[i - 1])
-        {
-            cout << "Индекс " << i << ": " << arr[i] << endl;
-        }
-    }
-}
-
 bool hasTwoPairsWithSameSign(const int arr[], const int n)
 {
-    for (size_t i = 0; i < n - 3; ++i)
+    if (n < 4) return false; // Не может быть двух пар при n < 4
+    
+    int pairsFound = 0;
+    for (size_t i = 0; i < n - 1; ++i)
     {
-        if ((arr[i] * arr[i + 1] > 0 && arr[i + 2] * arr[i + 3] > 0))
+        if (arr[i] * arr[i + 1] > 0) // Одинаковые знаки
         {
-            return true;
+            pairsFound++;
+            if (pairsFound >= 2) return true;
+            i++; // Пропускаем следующий элемент, так как он уже в паре
         }
     }
-
     return false;
 }
-
 void fillArray(int* arr, const int n, const int min, const int max)
 {
     for (size_t i = 0; i < n; i++)
