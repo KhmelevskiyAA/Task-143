@@ -25,6 +25,12 @@ double rectangleArea(const double length, const double width);
  * @return double Площадь треугольника.
  */
 double triangleArea(const double a, const double b, const double c);
+/**
+ * @brief Главная функция программы для вычисления площади прямоугольника и треугольника.
+ * @return int Код завершения программы:
+ *             - 0: Успешное выполнение.
+ *             - 1: Ошибка ввода или вычислений (некорректные аргументы).
+ */
 int main() {
     try {
         // Ввод данных для прямоугольника
@@ -33,6 +39,7 @@ int main() {
         cout << "Введите ширину прямоугольника: ";
        const double width = getValue();
         cout << "Площадь прямоугольника: " << rectangleArea(length, width) << endl;
+
         // Ввод данных для треугольника
         cout << "Введите три стороны треугольника:\n";
         cout << "Сторона a: ";
@@ -47,6 +54,7 @@ int main() {
         cerr << "Ошибка: " << e.what() << endl;
         return 1;
     }
+
     return 0;
 }
 // Функция вычисления площади прямоугольника
