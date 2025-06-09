@@ -102,8 +102,8 @@ int main()
     checkRange(minValue, maxValue);
 
     cout << "Введите выбор для заполнения массива: " << endl
-        << RANDOM << " Для случайного заполнения" << endl
-        << MANUALLY << " Для ручного заполнения" << endl;
+        << RANDOM << " - Для случайного заполнения" << endl
+        << MANUALLY << " - Для ручного заполнения" << endl;
 
     int choice = getNumber();
 
@@ -117,28 +117,31 @@ int main()
         break;
     default:
         cout << "Ваш выбор неверен" << endl;
+        delete[] arr;
         return -1;
     }
 
-     cout << "Массив после замены минимального значения " << oldValue 
-         << " на среднее (" << arr[minIndex] << "):" << endl;
-    
-    return arr[minIndex];
-}
+    cout << "Исходный массив:" << endl;
+    printArray(arr, n);
+
+    int averageValue = replaceMinWithAverage(arr, n);
+    cout << "Среднее значение: " << averageValue << endl;
+
+    cout << "Массив после замены минимального элемента на среднее:" << endl;
     printArray(arr, n);
 
     printIndicesGreaterThanPrevious(arr, n);
 
     if (hasTwoPairsWithSameSign(arr, n))
     {
-        cout << "Есть две пары соседних элементов с одинаковыми знаками.\\n";
+        cout << "Есть две пары соседних элементов с одинаковыми знаками." << endl;
     }
     else
     {
-        cout << "Две пары соседних элементов с одинаковыми знаками отсутствуют.\\n";
+        cout << "Две пары соседних элементов с одинаковыми знаками отсутствуют." << endl;
     }
 
-    delete[] arr; // Освобождаем память массива
+    delete[] arr;
     return 0;
 }
 
@@ -146,7 +149,7 @@ void checkN(const int n)
 {
     if (n <= 0)
     {
-        cout << "Неправильный размер массива" << endl;
+        cerr << "Неправильный размер массива" << endl;
         abort();
     }
 }
@@ -154,7 +157,7 @@ void checkN(const int n)
 size_t getSize()
 {
     cout << "Введите размер массива: ";
-    int n=0;
+    int n = 0;
     cin >> n;
     checkN(n);
     return (size_t)n;
@@ -162,11 +165,11 @@ size_t getSize()
 
 int getNumber()
 {
-    int number =0;
+    int number = 0;
     cin >> number;
     if (cin.fail())
     {
-        cout << "Неправильный ввод данных";
+        cerr << "Неправильный ввод данных" << endl;
         abort();
     }
     return number;
@@ -182,7 +185,7 @@ void printArray(const int* arr, const int n)
 
 void fillArrayRandom(int* arr, const int n, const int min, const int max)
 {
-    srand(time(0));
+    srand(static_cast<unsigned int>(time(0)));
     for (size_t i = 0; i < n; i++)
     {
         arr[i] = rand() % (max - min + 1) + min;
@@ -193,74 +196,82 @@ void checkRange(const int min, const int max)
 {
     if (min > max)
     {
-        cout << "Введен неправильный диапазон" << endl;
+        cerr << "Введен неправильный диапазон" << endl;
         abort();
     }
 }
 
 int replaceMinWithAverage(int arr[], const int n)
 {
-    // Создаем копию массива для работы
-    vector<int> arrCopy(arr, arr + n);
-    
-    int minIndex = 0;
-    int sum = 0; // Явная инициализация
+    if (n == 0) return 0;
 
-    for (size_t i = 1; i < n; ++i)
+    int minIndex = 0;
+    int sum = 0;
+
+    // Находим минимальный элемент и считаем сумму
+    for (size_t i = 0; i < n; ++i)
     {
-        if (arrCopy[i] < arrCopy[minIndex])
+        if (arr[i] < arr[minIndex])
         {
             minIndex = i;
         }
+        sum += arr[i];
     }
 
-    for (size_t i = 0; i < n; ++i)
-    {
-        sum += arrCopy[i];
-    }
+    int average = sum / n;
+    int oldValue = arr[minIndex];
+    arr[minIndex] = average;
 
-    arrCopy[minIndex] = sum / n;
+    cout << "Минимальный элемент arr[" << minIndex << "] = " << oldValue 
+         << " заменен на среднее значение " << average << endl;
 
-    cout << "Массив после замены минимального значения на среднее: ";
-    for (size_t i = 0; i < n; ++i)
-    {
-        cout << arrCopy[i] << " ";
-    }
-    cout << endl;
-    
-    return sum / n;
+    return average;
 }
+
 bool hasTwoPairsWithSameSign(const int arr[], const int n)
 {
-    if (n < 4) return false; // Не может быть двух пар при n < 4
+    if (n < 4) return false;
+
     int pairsFound = 0;
-    for (size_t i = 0; i < n - 1; ) // Убрали ++i из условия цикла
+    for (size_t i = 0; i < n - 1; i++)
     {
-        if (arr[i] * arr[i + 1] > 0) // Одинаковые знаки
+        if ((arr[i] * arr[i + 1]) > 0) // Одинаковые знаки
         {
             pairsFound++;
-            if (pairsFound >= 2) 
+            if (pairsFound >= 2)
                 return true;
-            i += 2; // Перескакиваем через следующий элемент
-        }
-        else
-        {
-            i++; // Переходим к следующему элементу
+            i++; // Пропускаем следующий элемент, чтобы не считать перекрывающиеся пары
         }
     }
     return false;
 }
+
+void printIndicesGreaterThanPrevious(const int arr[], const int n)
+{
+    if (n < 2) return;
+
+    cout << "Индексы элементов, значения которых больше предыдущих:" << endl;
+    for (size_t i = 1; i < n; i++)
+    {
+        if (arr[i] > arr[i - 1])
+        {
+            cout << i << " ";
+        }
+    }
+    cout << endl;
+}
+
 void fillArray(int* arr, const int n, const int min, const int max)
 {
     for (size_t i = 0; i < n; i++)
     {
-        cout << "Enter value for arr[" << i << "]: ";
+        cout << "Введите значение для arr[" << i << "]: ";
         arr[i] = getNumber();
 
-        if (arr[i] < min || arr[i] > max)
+        while (arr[i] < min || arr[i] > max)
         {
-            cout << "Значение вне диапазона" << endl;
-            i--;
+            cout << "Значение вне диапазона [" << min << ", " << max << "]. Повторите ввод: ";
+            arr[i] = getNumber();
         }
     }
-} 
+}
