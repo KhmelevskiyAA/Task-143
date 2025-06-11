@@ -1,53 +1,68 @@
 #include <iostream>
 #include <cmath>
 #include <iomanip>
+#include <tuple>
+#include <functional>
 
 using namespace std;
 
-/**
- * @brief Вычисляет значение A по заданной формуле
- * @param x Входное значение x
- * @param y Входное значение y
- * @param z Входное значение z
- * @return Результат вычисления A
- */
-double calculateA(const double x, const double y, const double z);
+// Константы для вычислений
+constexpr double X = 2.0;
+constexpr double Y = 0.7;
+constexpr double Z = -1.0;
+constexpr int PRECISION = 4;
 
 /**
- * @brief Вычисляет значение B по заданной формуле
- * @param x Входное значение x
- * @param y Входное значение y
- * @param z Входное значение z
- * @return Результат вычисления B
+ * @brief Вычисляет значение A по формуле ∛(x*y*z + |z*sin(y)|)
+ * @param x Первый параметр
+ * @param y Второй параметр
+ * @param z Третий параметр
+ * @return Результат вычисления
  */
-double calculateB(const double x, const double y, const double z);
+constexpr auto calculateA(const double x, const double y, const double z) noexcept
+{
+    const auto expression = x * y * z + abs(z * sin(y));
+    return cbrt(expression);
+}
+
+/**
+ * @brief Вычисляет значение B по формуле y*cos(x*z*sin(y)) + 3
+ * @param x Первый параметр
+ * @param y Второй параметр
+ * @param z Третий параметр
+ * @return Результат вычисления
+ */
+constexpr auto calculateB(const double x, const double y, const double z) noexcept
+{
+    const auto argument = x * z * sin(y);
+    return y * cos(argument) + 3.0;
+}
+
+/**
+ * @brief Выводит результаты вычислений
+ * @param results Пары с названиями и значениями результатов
+ */
+void printResults(const initializer_list<pair<string, double>>& results)
+{
+    cout << "Результаты вычислений:\n";
+    for (const auto& [name, value] : results) {
+        cout << name << " = " << fixed << setprecision(PRECISION) << value << '\n';
+    }
+}
 
 int main()
 {
-    // Исходные данные
-    const double x = 2.0;
-    const double y = 0.7;
-    const double z = -1.0;
-    
-    // Устанавливаем точность вывода
-    cout << fixed << setprecision(4);
-    
-    // Вычисляем и выводим результаты
-    cout << "Результаты вычислений:" << endl;
-    cout << "A = " << calculateA(x, y, z) << endl;
-    cout << "B = " << calculateB(x, y, z) << endl;
-    
+    // Устанавливаем локаль для корректного вывода кириллицы
+    ios_base::sync_with_stdio(false);
+    locale::global(locale(""));
+    cout.imbue(locale());
+
+    // Вычисляем оба значения
+    const auto a = calculateA(X, Y, Z);
+    const auto b = calculateB(X, Y, Z);
+
+    // Выводим результаты
+    printResults({{"A", a}, {"B", b}});
+
     return 0;
-}
-
-double calculateA(const double x, const double y, const double z)
-{
-    const double expression = x * y * z + fabs(z * sin(y));
-    return cbrt(expression); // Используем cbrt вместо pow для вычисления кубического корня
-}
-
-double calculateB(const double x, const double y, const double z)
-{
-    const double argument = x * z * sin(y);
-    return y * cos(argument) + 3.0;
 }
