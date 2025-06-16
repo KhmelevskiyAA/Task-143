@@ -5,29 +5,73 @@
 
 using namespace std;
 
-// Прототипы функций
-void fillArrayRandom(int arr[], int n, int min, int max);
-void fillArrayManual(int arr[], int n, int min, int max);
-void printArray(int arr[], int n);
-void replaceMinWithAverage(int arr[], int n);
-void printIndicesGreaterThanPrevious(int arr[], int n);
-bool hasTwoPairsWithSameSign(int arr[], int n);
+/**
+ * @brief Заполняет массив случайными числами в заданном диапазоне
+ * @param arr Указатель на массив для заполнения
+ * @param n Размер массива
+ * @param min Минимальное значение элемента
+ * @param max Максимальное значение элемента
+ */
+void fillArrayRandom(int* arr, int n, int min, int max);
+
+/**
+ * @brief Заполняет массив вручную с проверкой ввода
+ * @param arr Указатель на массив для заполнения
+ * @param n Размер массива
+ * @param min Минимальное значение элемента
+ * @param max Максимальное значение элемента
+ */
+void fillArrayManual(int* arr, int n, int min, int max);
+
+/**
+ * @brief Выводит массив на экран
+ * @param arr Указатель на массив для вывода
+ * @param n Размер массива
+ */
+void printArray(const int* arr, int n);
+
+/**
+ * @brief Заменяет минимальный элемент массива на среднее значение
+ * @param arr Указатель на массив для обработки
+ * @param n Размер массива
+ */
+void replaceMinWithAverage(int* arr, int n);
+
+/**
+ * @brief Выводит индексы элементов, больших предыдущего
+ * @param arr Указатель на массив для анализа
+ * @param n Размер массива
+ */
+void printIndicesGreaterThanPrevious(const int* arr, int n);
+
+/**
+ * @brief Проверяет наличие двух пар соседних элементов с одинаковыми знаками
+ * @param arr Указатель на массив для проверки
+ * @param n Размер массива
+ * @return true если найдены две пары, иначе false
+ */
+bool hasTwoPairsWithSameSign(const int* arr, int n);
 
 int main() {
+    // Инициализация генератора случайных чисел
     setlocale(LC_ALL, "Russian");
-    srand(time(0)); // Инициализация генератора случайных чисел
+    srand(time(0));
 
+    // Ввод размера массива
     int n;
     cout << "Введите размер массива (нечетное число): ";
     cin >> n;
 
-    // Проверка на нечетность размера массива
+    // Проверка на нечетность размера
     if (n % 2 == 0) {
-        cout << "Ошибка: размер массива должен быть нечетным!" << endl;
+        cerr << "Ошибка: размер массива должен быть нечетным!" << endl;
         return 1;
     }
 
+    // Выделение памяти под массив
     int* arr = new int[n];
+    
+    // Выбор способа заполнения
     int choice;
     cout << "Выберите способ заполнения массива:\n"
          << "1 - Автоматическое заполнение случайными числами\n"
@@ -35,32 +79,35 @@ int main() {
          << "Ваш выбор: ";
     cin >> choice;
 
+    // Диапазон допустимых значений
     const int min = -20;
     const int max = 40;
     
+    // Заполнение массива
     if (choice == 1) {
         fillArrayRandom(arr, n, min, max);
     } else if (choice == 2) {
         fillArrayManual(arr, n, min, max);
     } else {
-        cout << "Неверный выбор!" << endl;
+        cerr << "Неверный выбор!" << endl;
         delete[] arr;
         return 1;
     }
 
+    // Вывод исходного массива
     cout << "\nИсходный массив:\n";
     printArray(arr, n);
 
-    // 1. Замена минимального элемента на средний
+    // Замена минимального элемента на среднее
     replaceMinWithAverage(arr, n);
     cout << "\nМассив после замены минимального элемента на средний:\n";
     printArray(arr, n);
 
-    // 2. Вывод индексов элементов, больших предыдущего
+    // Вывод индексов элементов, больших предыдущего
     cout << "\nИндексы элементов, больших предыдущего:\n";
     printIndicesGreaterThanPrevious(arr, n);
 
-    // 3. Проверка на наличие двух пар соседних элементов с одинаковыми знаками
+    // Проверка пар соседних элементов
     cout << "\nПроверка на две пары соседних элементов с одинаковыми знаками:\n";
     if (hasTwoPairsWithSameSign(arr, n)) {
         cout << "В массиве есть две пары соседних элементов с одинаковыми знаками.\n";
@@ -68,75 +115,78 @@ int main() {
         cout << "В массиве нет двух пар соседних элементов с одинаковыми знаками.\n";
     }
 
+    // Освобождение памяти
     delete[] arr;
     return 0;
 }
 
-// Заполнение массива случайными числами в заданном диапазоне
-void fillArrayRandom(int arr[], int n, int min, int max) {
+void fillArrayRandom(int* arr, int n, int min, int max) {
+    // Заполнение массива случайными числами
     for (int i = 0; i < n; i++) {
-        arr[i] = rand() % (max - min + 1) + min;
+        *(arr + i) = rand() % (max - min + 1) + min;
     }
 }
 
-// Заполнение массива вручную с проверкой диапазона
-void fillArrayManual(int arr[], int n, int min, int max) {
+void fillArrayManual(int* arr, int n, int min, int max) {
+    // Ручной ввод элементов с проверкой диапазона
     for (int i = 0; i < n; i++) {
         cout << "Введите элемент [" << i << "] (диапазон [" << min << ", " << max << "]): ";
-        cin >> arr[i];
-        while (arr[i] < min || arr[i] > max) {
-            cout << "Ошибка! Значение должно быть в диапазоне [" << min << ", " << max << "]. Повторите ввод: ";
-            cin >> arr[i];
+        cin >> *(arr + i);
+        while (*(arr + i) < min || *(arr + i) > max) {
+            cerr << "Ошибка! Значение должно быть в диапазоне [" << min << ", " << max << "]. Повторите ввод: ";
+            cin >> *(arr + i);
         }
     }
 }
 
-// Вывод массива на экран
-void printArray(int arr[], int n) {
+void printArray(const int* arr, int n) {
+    // Вывод элементов массива
     for (int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
+        cout << *(arr + i) << " ";
     }
     cout << endl;
 }
 
-// Замена минимального элемента на среднее значение
-void replaceMinWithAverage(int arr[], int n) {
+void replaceMinWithAverage(int* arr, int n) {
+    // Поиск минимального элемента и вычисление суммы
     int minIndex = 0;
     int sum = 0;
 
-    // Находим минимальный элемент и считаем сумму
     for (int i = 0; i < n; i++) {
-        if (arr[i] < arr[minIndex]) {
+        if (*(arr + i) < *(arr + minIndex)) {
             minIndex = i;
         }
-        sum += arr[i];
+        sum += *(arr + i);
     }
 
+    // Замена минимального элемента на среднее
     int average = sum / n;
-    cout << "Минимальный элемент: " << arr[minIndex] << " заменен на среднее: " << average << endl;
-    arr[minIndex] = average;
+    cout << "Минимальный элемент: " << *(arr + minIndex) 
+         << " заменен на среднее: " << average << endl;
+    *(arr + minIndex) = average;
 }
 
-// Вывод индексов элементов, больших предыдущего
-void printIndicesGreaterThanPrevious(int arr[], int n) {
+void printIndicesGreaterThanPrevious(const int* arr, int n) {
+    // Поиск и вывод индексов элементов, больших предыдущего
     for (int i = 1; i < n; i++) {
-        if (arr[i] > arr[i-1]) {
+        if (*(arr + i) > *(arr + i - 1)) {
             cout << i << " ";
         }
     }
     cout << endl;
 }
 
-// Проверка на наличие двух пар соседних элементов с одинаковыми знаками
-bool hasTwoPairsWithSameSign(int arr[], int n) {
+bool hasTwoPairsWithSameSign(const int* arr, int n) {
+    // Поиск двух пар соседних элементов с одинаковыми знаками
     int pairCount = 0;
     for (int i = 0; i < n - 1; i++) {
-        if ((arr[i] >= 0 && arr[i+1] >= 0) || (arr[i] < 0 && arr[i+1] < 0)) {
+        if ((*(arr + i) >= 0 && *(arr + i + 1) >= 0) || 
+            (*(arr + i) < 0 && *(arr + i + 1) < 0)) {
             pairCount++;
             if (pairCount >= 2) {
                 return true;
             }
-            i++; // Пропускаем следующий элемент, чтобы пары не перекрывались
+            i++; // Пропуск следующего элемента
         }
     }
     return false;
