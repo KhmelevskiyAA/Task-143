@@ -1,42 +1,68 @@
 #include <iostream>
 #include <cmath>
+#include <iomanip>  // Для управления выводом чисел
+#include <stdexcept>  // Для обработки исключений
+
 using namespace std;
 
-/** 
- *@brief - функция для вычисления A по заданному уравнению
- * @param x - значение переменной x
- * @param y - значение перемнной y
- * @param z -значение переменной z
- * @return - возвращает рассчитанное значение 
+/**
+ * @brief Вычисляет значение A по формуле ∛(x*y*z + |z*sin(y)|)
+ * @param x Первый параметр
+ * @param y Второй параметр
+ * @param z Третий параметр
+ * @return Результат вычисления
+ * @throw std::invalid_argument Если аргумент корня отрицательный
  */
- double getA(const double x, const double y, const double z);
- 
- /**
-  *@brief - Функция для вычисления B по заданному уравнению 
-  *@param x - значение переменной x
-  *@param y - значение переменной y
-  *@param z - значение переменной z
-  *@return - возвращает рассчитанное значение 
-  */
-  double getB(const double x, const double y, const double z);
-  /**
-   *@brief - точка входа в программу
-   *@return - возвращает 0, если программа выполненна корректно
-   */
-  int main()
-{
-const double x = 2;
-const double y = 0.7;
-const double z = -1;
-cout<<"A = "<<getA(x,y,z)<<endl;
-cout<<"B = "<<getB(x,y,z);
-return 0;
+double calculateA(const double x, const double y, const double z) {
+    const double expression = x * y * z + abs(z * sin(y));
+    if (expression < 0) {
+        throw invalid_argument("Отрицательное значение под корнем");
+    }
+    return cbrt(expression);  // Используем cbrt вместо pow для точности
 }
-double getA(const double x, const double y, const double z)
-{
-    return pow(x * y * z + fabs(z * sin(y)), 1.0/3.0);
+
+/**
+ * @brief Вычисляет значение B по формуле y*cos(x*z*sin(y)) + 3
+ * @param x Первый параметр
+ * @param y Второй параметр
+ * @param z Третий параметр
+ * @return Результат вычисления
+ */
+double calculateB(const double x, const double y, const double z) {
+    const double argument = x * z * sin(y);
+    return y * cos(argument) + 3.0;
 }
-double getB (const double x, const double y, const double z)
-{
-    return y * cos(x * z * sin(y)) + 3;
+
+/**
+ * @brief Точка входа в программу
+ * @return 0 при успешном выполнении
+ */
+int main() {
+    // Устанавливаем локаль для корректного вывода русских символов
+    setlocale(LC_ALL, "Russian");
+    
+    // Устанавливаем точность вывода
+    cout << fixed << setprecision(4);
+
+    // Исходные данные
+    constexpr double x = 2.0;
+    constexpr double y = 0.7;
+    constexpr double z = -1.0;
+
+    try {
+        // Вычисляем и выводим результаты
+        cout << "Результаты вычислений:\n";
+        cout << "A = " << calculateA(x, y, z) << endl;
+        cout << "B = " << calculateB(x, y, z) << endl;
+    } 
+    catch (const invalid_argument& e) {
+        cerr << "Ошибка вычисления: " << e.what() << endl;
+        return 1;
+    }
+    catch (...) {
+        cerr << "Неизвестная ошибка при вычислениях" << endl;
+        return 2;
+    }
+
+    return 0;
 }
