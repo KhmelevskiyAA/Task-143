@@ -38,7 +38,6 @@ int getNumber();
  * @param n - размер массива
  */
 void printArray(const int* arr, const int n);
-
 /**
  * @brief заполнение массива автоматически случайнвми числами в заданном диапазоне
  * @param arr - массив
@@ -47,35 +46,33 @@ void printArray(const int* arr, const int n);
  * @param max - максимальное значение диапазона значений элементов массива
  */
 void fillArrayRandom(int* arr, const int n, const int min, const int max);
-
 /**
  * @brief проверяет диапазон
  * @param min - минимальное значение диапазона значений элементов массива
  * @param max - максимальное значение диапазона значений элементов массива
  */
 void checkRange(const int min, const int max);
-
 /**
- * @brief Заменяет минимальный элемент массива на средний, если количество элементов в массиве нечетное
- * @param arr  Массив целых чисел, в котором будет произведена замена
+ * @brief Заменяет минимальный элемент массива на среднее арифметическое всех элементов
+ * @param arr Указатель на массив целых чисел
  * @param n Размер массива
+ * @return Среднее арифметическое значение
  */
-int replaceMinWithAverage(int arr[], const int n);
-
+int replaceMinWithAverage(const int* arr, const int n) 
 /**
- * @brief проверяет, содержит ли массив две пары соседних элементов с одинаковыми знаками.
- * @param arr Указатель на массив целых чисел.
- * @param n Количество элементов в массиве.
- * @return true, если в массиве есть две пары соседних элементов с одинаковыми знаками, иначе false.
+ * @brief Проверяет, содержит ли массив две пары соседних элементов с одинаковыми знаками
+ * @param arr Указатель на массив целых чисел
+ * @param n Количество элементов в массиве
+ * @return true - если найдены две пары соседей с одинаковыми знаками, false - в противном случае
+ * @throw std::invalid_argument если arr == nullptr или n < 4
  */
-bool hasTwoPairsWithSameSign(const int arr[], const int n);
-
+bool hasTwoPairsWithSameSign(const int* arr, const int n)
 /**
  * @brief выводит индексы элементов массива, значения которых больше предыдущих элементов.
  * @param arr Указатель на массив целых чисел.
  * @param n Количество элементов в массиве.
  */
-void printIndicesGreaterThanPrevious(const int arr[], const int n);
+void printIndicesGreaterThanPrevious(const int* arr, const int n);
 
 /**
  * @brief заполнение массива вручную
@@ -121,39 +118,35 @@ int main()
         return -1;
     }
 
-    cout << "Исходный массив:" << endl;
+  cout << "\nИсходный массив:\n";
     printArray(arr, n);
 
     int averageValue = replaceMinWithAverage(arr, n);
-    cout << "Среднее значение: " << averageValue << endl;
-
-    cout << "Массив после замены минимального элемента на среднее:" << endl;
+    cout << "\nСреднее значение: " << averageValue << endl;
+    cout << "Массив после замены минимального элемента на среднее:\n";
     printArray(arr, n);
 
+    cout << "\nПроверка на две пары соседних элементов с одинаковыми знаками: "
+         << (hasTwoPairsWithSameSign(arr, n) ? "да" : "нет") << endl;
+         
     printIndicesGreaterThanPrevious(arr, n);
 
-    if (hasTwoPairsWithSameSign(arr, n))
-    {
-        cout << "Есть две пары соседних элементов с одинаковыми знаками." << endl;
-    }
-    else
-    {
-        cout << "Две пары соседних элементов с одинаковыми знаками отсутствуют." << endl;
-    }
-
     delete[] arr;
-    return 0;
-}
+    return EXIT_SUCCESS;
 
+/**
+ * @brief Проверяет корректность размера массива
+ * @param n - размер массива для проверки
+ * @throw std::invalid_argument если размер некорректен
+ */
 void checkN(const int n)
 {
     if (n <= 0)
     {
-        cerr << "Неправильный размер массива" << endl;
-        abort();
+        throw std::invalid_argument("Размер массива должен быть положительным числом");
     }
 }
-
+        
 size_t getSize()
 {
     cout << "Введите размер массива: ";
@@ -222,7 +215,7 @@ int replaceMinWithAverage(int arr[], const int n)
     int oldValue = arr[minIndex];
     arr[minIndex] = average;
 
-    cout << "Минимальный элемент arr[" << minIndex << "] = " << oldValue 
+    cout << "Минимальный элемент arr[" << minIndex << "] = " << oldValue
          << " заменен на среднее значение " << average << endl;
 
     return average;
