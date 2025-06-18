@@ -21,7 +21,7 @@ void fillArrayRandom(int* arr, const int n, const int min, const int max);
  * @param min Минимальное значение элемента
  * @param max Максимальное значение элемента
  */
-void fillArrayManual(int* arr, cinst int n, const int min, const int max);
+void fillArrayManual(int* arr, const int n, const int min, const int max);
 
 /**
  * @brief Выводит массив на экран
@@ -161,13 +161,13 @@ switch (choice) {
 
   // Вывод исходного массива
 cout << "\nИсходный массив (" << n << " элементов):\n";
-printArray(arr, n);
+printArray (arr, n);
 
 // Замена минимального элемента на среднее
 replaceMinWithAverage(arr, n);
 cout << "\nМассив после замены минимального элемента (" 
      << findMinValue(arr, n) << ") на среднее арифметическое:\n";
-printArray(arr, n);
+printArray (arr, n);
 
 // Вывод индексов элементов, больших предыдущего
 cout << "\nИндексы элементов, больших предыдущего:\n";
@@ -192,7 +192,6 @@ if (indices.empty()) {
     // Освобождение памяти
     delete[] arr;
     return 0;
-}
 
 void fillArrayRandom(int* arr, int n, int min, int max) {
     // Заполнение массива случайными числами
