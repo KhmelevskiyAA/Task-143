@@ -68,6 +68,11 @@ bool hasTwoPairsWithSameSign(const int* arr,const int n);
  *    - Ручной ввод с клавиатуры
  * 5. Обработку массива (замена минимального элемента, анализ)
  * 6. Освобождение выделенной памяти
+ *
+ * @note Для корректной работы требуется:
+ * - #include <locale.h> или <clocale> для setlocale()
+ * - #include <stdlib.h> или <cstdlib> для srand()
+ * - #include <time.h> или <ctime> для time()
  */
 int main() {
     // Инициализация генератора случайных чисел
@@ -257,7 +262,7 @@ void replaceMinWithAverage(int* arr, int n) {
 
 void printIndicesGreaterThanPrevious(const int* arr, int n) {
     // Поиск и вывод индексов элементов, больших предыдущего
-    for (int i = 1; i < n; i++) {
+    for (size_t i = 1; i < n; i++) {
         if (*(arr + i) > *(arr + i - 1)) {
             cout << i << " ";
         }
